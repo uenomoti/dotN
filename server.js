@@ -5,7 +5,9 @@ const WebSocket = require("ws");
 const fs = require("fs");
 const app = express();
 
-const PORT = 8080;
+// Render では PORT は環境変数から渡される
+const PORT = process.env.PORT || 8080;
+
 const SAVE_FILE = "canvas.json";
 
 // 永続化キャンバス
@@ -23,7 +25,6 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
-  // 接続時に全データ送信
   ws.send(JSON.stringify({ type: "init", data: canvasData }));
 
   ws.on("message", (msg) => {
@@ -31,7 +32,7 @@ wss.on("connection", (ws) => {
     if (m.type === "dot") {
       const key = `${m.x},${m.y}`;
       canvasData[key] = m.color;
-      // 全員に配信
+
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ type: "dot", x: m.x, y: m.y, color: m.color }));
