@@ -17,7 +17,7 @@ const colors = [
 ];
 
 let dots = {};
-const socket = new WebSocket(`ws://${location.host}`);
+const socket = new WebSocket("wss://dotn.onrender.com");
 
 socket.onmessage = (e) => {
   const msg = JSON.parse(e.data);
@@ -184,3 +184,4 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("resize", draw);
+
